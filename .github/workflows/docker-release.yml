@@ -18,13 +18,13 @@ jobs:
         id: envs
         run: |
           CLOUDREVE_LATEST_TAG=$(git describe --tags --abbrev=0)
-          DOCKER_IMAGE="gtian5418/cloudreve"  # 改为你的Docker Hub用户名
+          DOCKER_IMAGE="gtian5418/cloudreve"
 
           echo "RELEASE_VERSION=${GITHUB_REF#refs}"
           TAGS="${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${CLOUDREVE_LATEST_TAG}"
 
           echo "CLOUDREVE_LATEST_TAG:${CLOUDREVE_LATEST_TAG}"
-          echo "tags=${TAGS}" >> $GITHUB_OUTPUT  # 更新输出语法
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           
       - name: Download Cloudreve
         run: |
@@ -33,29 +33,28 @@ jobs:
           chmod +x cloudreve   
           
       - name: Setup QEMU Emulator
-        uses: docker/setup-qemu-action@master
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
           
       - name: Setup Docker Buildx Command
         id: buildx
-        uses: docker/setup-buildx-action@master
+        uses: docker/setup-buildx-action@v2
         
       - name: Login to Dockerhub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           
       - name: Build Docker Image and Push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
-          push: true
-          builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
           tags: ${{ steps.envs.outputs.tags }}
           
       - name: Update Docker Hub Description
@@ -63,7 +62,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: gtian5418/cloudreve  # 改为你的仓库名
+          repository: gtian5418/cloudreve
           short-description: ${{ github.event.repository.description }}
           
       - name: Image Digest
