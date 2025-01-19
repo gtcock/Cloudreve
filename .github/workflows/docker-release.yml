@@ -28,8 +28,8 @@ jobs:
           
       - name: Download Cloudreve
         run: |
-          wget https://github.com/cloudreve/Cloudreve/releases/download/3.7.1/cloudreve_3.7.1_linux_amd64.tar.gz
-          tar -zxvf cloudreve_3.7.1_linux_amd64.tar.gz
+          wget https://github.com/cloudreve/Cloudreve/releases/download/3.8.3/cloudreve_3.8.3_linux_amd64.tar.gz
+          tar -zxvf cloudreve_3.8.3_linux_amd64.tar.gz
           chmod +x cloudreve   
           
       - name: Setup QEMU Emulator
